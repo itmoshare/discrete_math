@@ -6,13 +6,13 @@ namespace JarHell.Packages
     [JsonObject(MemberSerialization.OptIn)]
     public class PackageInfo
     {
-        [JsonProperty]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("version")]
         public Version Version { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("dependencies")]
         public Dependency[] Dependencies { get; set; }
     }
 }

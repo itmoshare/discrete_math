@@ -37,11 +37,19 @@ namespace JarHell.Versions
                 Patch ?? 0);
         }
 
+        public Version GetMaxVersion()
+        {
+            return new Version(
+                Major ?? int.MaxValue,
+                Minor ?? int.MaxValue,
+                Patch ?? int.MaxValue);
+        }
+
         public override string ToString()
         {
-            var major = Major.ToString() ?? "*";
-            var minor = Minor.ToString() ?? "*";
-            var patch = Patch.ToString() ?? "*";
+            var major = Major?.ToString() ?? "*";
+            var minor = Minor?.ToString() ?? "*";
+            var patch = Patch?.ToString() ?? "*";
             return $"{major}.{minor}.{patch}";
         }
     }

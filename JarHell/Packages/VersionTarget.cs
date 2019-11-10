@@ -1,6 +1,8 @@
+using System;
 using JarHell.Versions;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Version = JarHell.Versions.Version;
 
 namespace JarHell.Packages
 {
@@ -15,6 +17,7 @@ namespace JarHell.Packages
         public VersionTarget(VersionFilter lower, VersionFilter upper)
         {
             TargetRange = new Range(lower, upper);
+            EnsureValidRange(TargetRange);
         }
 
         [CanBeNull]
@@ -23,9 +26,22 @@ namespace JarHell.Packages
         [CanBeNull]
         public Range TargetRange { get; }
 
+        public (Version lower, Version upper) ToRange() => TargetVersion != null
+            ? (TargetVersion.GetMinVersion(), TargetVersion.GetMaxVersion())
+            : (TargetRange.Lower.GetMinVersion(), TargetRange.Upper.GetMaxVersion());
+
         public override string ToString()
         {
             return TargetVersion?.ToString() ?? TargetRange?.ToString();
+        }
+
+        [AssertionMethod]
+        private static void EnsureValidRange(Range range)
+        {
+            if (range.Lower.GetMinVersion() > range.Upper.GetMaxVersion())
+            {
+                throw new ArgumentException($"{range} is invalid version range");
+            }
         }
 
         public class Range

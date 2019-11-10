@@ -5,10 +5,15 @@ namespace JarHell.Packages
     [JsonObject(MemberSerialization.OptIn)]
     public class Dependency
     {
-        [JsonProperty]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("version")]
         public VersionTarget Version { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name} {Version}";
+        }
     }
 }

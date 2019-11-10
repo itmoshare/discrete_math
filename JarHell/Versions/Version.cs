@@ -6,6 +6,10 @@ namespace JarHell.Versions
     [JsonConverter(typeof(VersionConverter))]
     public class Version : IComparable<Version>
     {
+        protected bool Equals(Version other)
+        {
+            return Major == other.Major && Minor == other.Minor && Patch == other.Patch;
+        }
         public Version(int major, int minor, int patch)
         {
             Major = major;
@@ -51,6 +55,24 @@ namespace JarHell.Versions
         public static bool operator >(Version v1, Version v2)
         {
             return v1?.CompareTo(v2) > 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((Version) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Major;
+                hashCode = (hashCode * 397) ^ Minor;
+                hashCode = (hashCode * 397) ^ Patch;
+                return hashCode;
+            }
         }
 
         public override string ToString()
