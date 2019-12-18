@@ -13,4 +13,20 @@
       <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="RepData" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="LocalData\c.package">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="LocalData\b.package">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="LocalData\a.package">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

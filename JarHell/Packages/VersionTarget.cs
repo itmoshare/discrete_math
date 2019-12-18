@@ -30,6 +30,16 @@ namespace JarHell.Packages
             ? (TargetVersion.GetMinVersion(), TargetVersion.GetMaxVersion())
             : (TargetRange.Lower.GetMinVersion(), TargetRange.Upper.GetMaxVersion());
 
+        public VersionFilter LowerBoundToFilter()
+        {
+            return TargetVersion ?? TargetRange.Lower;
+        }
+
+        public VersionFilter UpperBoundToFilter()
+        {
+            return TargetVersion ?? TargetRange.Upper;
+        }
+
         public override string ToString()
         {
             return TargetVersion?.ToString() ?? TargetRange?.ToString();

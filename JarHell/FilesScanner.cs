@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using JarHell.Packages;
@@ -7,23 +8,24 @@ namespace JarHell
 {
     public static class FilesScanner
     {
-        public static PackageInfo[] GetAllPackages(string[] paths, bool recursive = false)
+        public static PackageMeta[] GetAllPackages(string[] paths, bool recursive = false)
         {
             return paths
-                .SelectMany(path => Directory.EnumerateFiles(
-                    path,
-                    "*.package",
-                    recursive
-                        ? SearchOption.AllDirectories
-                        : SearchOption.TopDirectoryOnly))
-                .Select(path => JsonConvert.DeserializeObject<PackageInfo>(File.ReadAllText(path)))
-                .ToArray();
-        }
+                .SelectMany(path =>
+                {
+                    if (!Directory.Exists(path))
+                    {
+                        return Enumerable.Empty<string>();
+                    }
 
-        public static PackageInfo[] GetPackages(string[] paths)
-        {
-            return paths
-                .Select(path => JsonConvert.DeserializeObject<PackageInfo>(File.ReadAllText(path)))
+                    return Directory.EnumerateFiles(
+                        path,
+                        "*.package",
+                        recursive
+                            ? SearchOption.AllDirectories
+                            : SearchOption.TopDirectoryOnly);
+                })
+                .Select(path => new PackageMeta(path, JsonConvert.DeserializeObject<PackageInfo>(File.ReadAllText(path))))
                 .ToArray();
         }
     }

@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace JarHell.Versions
 {
-    public class VersionFilter
+    public class VersionFilter : IEquatable<VersionFilter>
     {
         public VersionFilter(int? major, int? minor, int? patch)
         {
@@ -51,6 +51,42 @@ namespace JarHell.Versions
             var minor = Minor?.ToString() ?? "*";
             var patch = Patch?.ToString() ?? "*";
             return $"{major}.{minor}.{patch}";
+        }
+
+        public bool Equals(VersionFilter other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Major == other.Major && Minor == other.Minor && Patch == other.Patch;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((VersionFilter) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Major.GetHashCode();
+                hashCode = (hashCode * 397) ^ Minor.GetHashCode();
+                hashCode = (hashCode * 397) ^ Patch.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(VersionFilter left, VersionFilter right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(VersionFilter left, VersionFilter right)
+        {
+            return !Equals(left, right);
         }
     }
 }

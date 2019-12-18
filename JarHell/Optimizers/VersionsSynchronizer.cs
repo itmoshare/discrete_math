@@ -39,7 +39,7 @@ namespace JarHell.Optimizers
                             "Inconsistent versions targets were found.",
                             package.sourcePackage,
                             package.dependency.Name,
-                            highestMinVersion.minVersion != highestMaxVersion.maxVersion
+                            highestMinVersion.versionFilter != highestMaxVersion.versionFilter
                                 ? new VersionTarget(highestMinVersion.versionFilter, highestMaxVersion.versionFilter)
                                 : new VersionTarget(highestMinVersion.versionFilter));
                     }
