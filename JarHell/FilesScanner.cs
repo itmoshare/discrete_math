@@ -8,7 +8,7 @@ namespace JarHell
 {
     public static class FilesScanner
     {
-        public static PackageMeta[] GetAllPackages(string[] paths, bool recursive = false)
+        public static PackageMeta[] GetAllPackages(string[] paths, bool local, bool recursive = false)
         {
             return paths
                 .SelectMany(path =>
@@ -25,7 +25,7 @@ namespace JarHell
                             ? SearchOption.AllDirectories
                             : SearchOption.TopDirectoryOnly);
                 })
-                .Select(path => new PackageMeta(path, JsonConvert.DeserializeObject<PackageInfo>(File.ReadAllText(path))))
+                .Select(path => new PackageMeta(path, local, JsonConvert.DeserializeObject<PackageInfo>(File.ReadAllText(path))))
                 .ToArray();
         }
     }

@@ -37,6 +37,7 @@ namespace JarHell.Packages
             {
                 return packages
                     .Where(package => lower < package.PackageInfo.Version && package.PackageInfo.Version < upper)
+                    .OrderBy(x => x.PackageInfo.Version)
                     .ToArray();
             }
 

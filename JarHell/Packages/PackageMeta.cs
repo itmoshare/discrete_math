@@ -4,10 +4,13 @@ namespace JarHell.Packages
     {
         public string Path { get; }
 
+        public bool Local { get; }
+
         public PackageInfo PackageInfo { get; }
 
-        public PackageMeta(string path, PackageInfo packageInfo)
+        public PackageMeta(string path, bool local, PackageInfo packageInfo)
         {
+            Local = local;
             Path = path;
             PackageInfo = packageInfo;
         }

@@ -14,7 +14,7 @@ namespace JarHell.Tests
             var synchronizer = new VersionsSynchronizer();
             var actual = synchronizer.GetSynchronizeOffers(new[]
                 {
-                    new PackageMeta("", new PackageInfo
+                    new PackageMeta("", true, new PackageInfo
                     {
                         Name = "A1",
                         Dependencies = new []
@@ -26,7 +26,7 @@ namespace JarHell.Tests
                             }
                         }
                     }),
-                    new PackageMeta("", new PackageInfo
+                    new PackageMeta("", true, new PackageInfo
                     {
                         Name = "A2",
                         Dependencies = new []
@@ -57,7 +57,7 @@ namespace JarHell.Tests
             var synchronizer = new VersionsSynchronizer();
             var actual = synchronizer.GetSynchronizeOffers(new[]
                 {
-                    new PackageMeta("", new PackageInfo
+                    new PackageMeta("", true, new PackageInfo
                     {
                         Name = "A1",
                         Dependencies = new []
@@ -69,7 +69,7 @@ namespace JarHell.Tests
                             }
                         }
                     }),
-                    new PackageMeta("", new PackageInfo
+                    new PackageMeta("", true, new PackageInfo
                     {
                         Name = "A2",
                         Dependencies = new []

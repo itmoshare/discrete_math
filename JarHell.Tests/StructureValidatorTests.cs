@@ -17,8 +17,8 @@ namespace JarHell.Tests
             var actual = structureValidator.ValidateStructure(
                 new[]
                 {
-                    new PackageMeta("", new PackageInfo { Name = "A", Version = v1 }),
-                    new PackageMeta("", new PackageInfo { Name = "A", Version = v2 })
+                    new PackageMeta("", true, new PackageInfo { Name = "A", Version = v1 }),
+                    new PackageMeta("", true, new PackageInfo { Name = "A", Version = v2 })
                 });
 
             Assert.That(actual, Has.Length.EqualTo(1));
