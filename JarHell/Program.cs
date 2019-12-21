@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CommandLine;
+using JarHell.Core;
 using JarHell.Optimizers;
 using JarHell.Optimizers.StructureOptimizer;
 using JarHell.Packages;
@@ -53,6 +54,8 @@ namespace JarHell
 
                     HandleVersionSynchronization(localPackages);
                     HandleCycles(localPackages, packagesRepository, o.Target);
+                    var resolvedPackages = ResolvePackages(PackageRepository.Create(localPackages), packagesRepository, o.Target);
+                    Run(resolvedPackages);
                 });
         }
 
@@ -119,6 +122,21 @@ namespace JarHell
                     }
                 }
             }
+        }
+
+        private static ResolvedPackage ResolvePackages(
+            PackageRepository local,
+            PackageRepository repository,
+            string target)
+        {
+            var packageResolver = new PackagesResolver();
+            return packageResolver.Resolve(local, repository, target);
+        }
+
+        private static void Run(ResolvedPackage resolvedPackage)
+        {
+            var runner = new Runner();
+            runner.Run(resolvedPackage);
         }
 
         private static bool ConsoleAsk(string question)

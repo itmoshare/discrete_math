@@ -16,6 +16,17 @@ namespace JarHell.Packages
             _packagesByNameAndVersion = new Dictionary<(string, Version), PackageMeta>();
         }
 
+        public static PackageRepository Create(PackageMeta[] packages)
+        {
+            var repository = new PackageRepository();
+            foreach (var packageMeta in packages)
+            {
+                repository.AddPackage(packageMeta);
+            }
+
+            return repository;
+        }
+
         public void AddPackage(PackageMeta packageMeta)
         {
             if (_packagesByNameAndVersion.ContainsKey((packageMeta.PackageInfo.Name, packageMeta.PackageInfo.Version)))
@@ -31,12 +42,13 @@ namespace JarHell.Packages
             _packagesByNameAndVersion.Add((packageMeta.PackageInfo.Name, packageMeta.PackageInfo.Version), packageMeta);
         }
 
-        public PackageMeta[] FindPackages(string name, Version lower, Version upper)
+        public PackageMeta[] FindPackages(string name, Version lower = null, Version upper = null)
         {
             if (_packagesByName.TryGetValue(name, out var packages))
             {
                 return packages
-                    .Where(package => lower < package.PackageInfo.Version && package.PackageInfo.Version < upper)
+                    .Where(package => (lower == null || lower <= package.PackageInfo.Version)
+                                      && (upper == null || package.PackageInfo.Version <= upper))
                     .OrderBy(x => x.PackageInfo.Version)
                     .ToArray();
             }

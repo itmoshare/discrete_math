@@ -52,9 +52,21 @@ namespace JarHell.Versions
             return v1?.CompareTo(v2) < 0;
         }
 
+        public static bool operator <=(Version v1, Version v2)
+        {
+            var cmp = v1?.CompareTo(v2);
+            return cmp < 0 || cmp == 0;
+        }
+
         public static bool operator >(Version v1, Version v2)
         {
             return v1?.CompareTo(v2) > 0;
+        }
+
+        public static bool operator >=(Version v1, Version v2)
+        {
+            var cmp = v1?.CompareTo(v2);
+            return cmp > 0 || cmp == 0;
         }
 
         public override bool Equals(object obj)
