@@ -28,6 +28,23 @@ namespace JarHell.Core
             {
                 _waitsTo[package] = new Dictionary<ResolvedPackage, bool>{ { waitsToPackage, false } };
             }
+
+            if (_waiters.TryGetValue(waitsToPackage, out var waiters))
+            {
+                waiters.Add(package);
+            }
+            else
+            {
+                _waiters[waitsToPackage] = new List<ResolvedPackage> { package };
+            }
+        }
+
+        public void AddEmptyRunWaiter(
+            ResolvedPackage package,
+            Action<ResolvedPackage> onWaitCompleted)
+        {
+            _waitCompletedCallbacks[package] = onWaitCompleted;
+            _waitsTo[package] = new Dictionary<ResolvedPackage, bool>();
         }
 
         public async Task NotifyRunAsync(ResolvedPackage package)
@@ -50,7 +67,11 @@ namespace JarHell.Core
 
         public Task RunAllNonLocked()
         {
-            return Task.WhenAll(_waitsTo.Where(x => !x.Value.Any()).Select(x => NotifyRunAsync(x.Key)));
+            return Task.WhenAll(_waitsTo
+                .Where(x => !x.Value.Any())
+                .Select(x => _waitCompletedCallbacks.TryGetValue(x.Key, out var callback)
+                    ? Task.Run(() => callback(x.Key))
+                    : Task.CompletedTask));
         }
     }
 }

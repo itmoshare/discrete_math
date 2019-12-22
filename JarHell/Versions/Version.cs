@@ -39,6 +39,11 @@ namespace JarHell.Versions
 
         public static bool operator ==(Version v1, Version v2)
         {
+            if (ReferenceEquals(v1, null) && ReferenceEquals(v2, null))
+            {
+                return true;
+            }
+
             return v1?.CompareTo(v2) == 0;
         }
 

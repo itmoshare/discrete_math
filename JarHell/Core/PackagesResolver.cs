@@ -12,7 +12,7 @@ namespace JarHell.Core
             PackageRepository packageRepository,
             string target)
         {
-            var targetPackage = packageRepository.FindPackages(target).Last();
+            var targetPackage = localRepository.FindPackages(target).Last();
             return ResolveInner(
                 targetPackage,
                 localRepository,
@@ -30,6 +30,10 @@ namespace JarHell.Core
             if (resolved.TryGetValue(package.PackageInfo.Name, out var alreadyResolved))
             {
                 alreadyResolved.Add(resolvedPackage);
+            }
+            else
+            {
+                resolved[package.PackageInfo.Name] = new List<ResolvedPackage> { resolvedPackage };
             }
 
             foreach (var packageInfoDependency in package.PackageInfo.Dependencies)

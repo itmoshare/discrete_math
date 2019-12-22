@@ -38,7 +38,6 @@ namespace JarHell
                     }
 
                     var localPackages = FilesScanner.GetAllPackages(new [] { o.Path }, true);
-
                     var structureValidator = new StructureValidator();
 
                     var validationErrors = structureValidator.ValidateStructure(localPackages);
@@ -54,6 +53,8 @@ namespace JarHell
 
                     HandleVersionSynchronization(localPackages);
                     HandleCycles(localPackages, packagesRepository, o.Target);
+
+                    localPackages = FilesScanner.GetAllPackages(new [] { o.Path }, true);
                     var resolvedPackages = ResolvePackages(PackageRepository.Create(localPackages), packagesRepository, o.Target);
                     Run(resolvedPackages);
                 });
