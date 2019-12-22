@@ -52,7 +52,7 @@ namespace JarHell
                     }
 
                     HandleVersionSynchronization(localPackages);
-                    HandleCycles(localPackages, packagesRepository, o.Target);
+                    HandleCycles(FilesScanner.GetAllPackages(new [] { o.Path }, true), packagesRepository, o.Target);
 
                     localPackages = FilesScanner.GetAllPackages(new [] { o.Path }, true);
                     var resolvedPackages = ResolvePackages(PackageRepository.Create(localPackages), packagesRepository, o.Target);
@@ -94,35 +94,39 @@ namespace JarHell
             }
         }
 
-        private static void HandleCycles(PackageMeta[] localPackages, PackageRepository packageRepository, string target)
+        private static bool HandleCycles(PackageMeta[] localPackages, PackageRepository packageRepository, string target)
         {
             var structureOptimizer = StructureOptimizer.Create(localPackages, packageRepository, target);
-            foreach (var optimizationOffer in structureOptimizer.CollectCycles())
-            {
-                Console.WriteLine("Cycle found");
-                foreach (var offer in optimizationOffer)
-                {
-                    if (ConsoleAsk($"Remove {offer.SourceMeta.PackageInfo.Name} dependency {offer.DependencyToRemove}?"))
-                    {
-                        var newPackageInfo = new PackageInfo
-                        {
-                            Name = offer.SourceMeta.PackageInfo.Name,
-                            Version = offer.SourceMeta.PackageInfo.Version,
-                            Dependencies = offer
-                                .SourceMeta
-                                .PackageInfo
-                                .Dependencies
-                                .Select(x => x.Name != offer.DependencyToRemove
-                                    ? new Dependency { Name = x.Name, Version = x.Version }
-                                    : null)
-                                .Where(x => x != null)
-                                .ToArray()
-                        };
+            var optimizationOffer = structureOptimizer.CollectCycles().FirstOrDefault();
+            if (optimizationOffer == null)
+                return false;
 
-                        File.WriteAllText(offer.SourceMeta.Path, JsonConvert.SerializeObject(newPackageInfo, Formatting.Indented));
-                    }
+            Console.WriteLine("Cycle found");
+            foreach (var offer in optimizationOffer)
+            {
+                if (ConsoleAsk($"Remove dependency '{offer.DependencyToRemove}' from package '{offer.SourceMeta.PackageInfo.Name}'?"))
+                {
+                    var newPackageInfo = new PackageInfo
+                    {
+                        Name = offer.SourceMeta.PackageInfo.Name,
+                        Version = offer.SourceMeta.PackageInfo.Version,
+                        Dependencies = offer
+                            .SourceMeta
+                            .PackageInfo
+                            .Dependencies
+                            .Select(x => x.Name != offer.DependencyToRemove
+                                ? new Dependency { Name = x.Name, Version = x.Version }
+                                : null)
+                            .Where(x => x != null)
+                            .ToArray()
+                    };
+
+                    File.WriteAllText(offer.SourceMeta.Path, JsonConvert.SerializeObject(newPackageInfo, Formatting.Indented));
+                    break;
                 }
             }
+
+            return true;
         }
 
         private static ResolvedPackage ResolvePackages(
