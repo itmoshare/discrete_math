@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="RepData" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Update="LocalData\c.package">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
@@ -25,6 +21,9 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="LocalData\a.package">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="RepData\d.package">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
